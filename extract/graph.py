@@ -29,7 +29,12 @@ class Graph:
         outStream = open(fileName, 'wb')
         pickle.dump(choiceArr, outStream)
         outStream.close()
-        
+
+    def saveCounter(self, fileName):
+        outStream = open(fileName, 'wb')
+        pickle.dump(self.frequency, outStream)
+        outStream.close()
+
     def loadFrequency(self, fileName):
         return pickle.load(fileName)
 

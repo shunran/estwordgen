@@ -40,7 +40,7 @@ class DiGraph(Graph):
                 '''
                 if re.match('\!', char):
                     print (word)
-                if not re.match("[a-zA-Z0-9\xF5\xE4\xF6\xFC\xF0\xFE\xD0\xE9\-\ \!\'\n]", char):
+                if not re.match("[a-zA-Z0-9\xF5\xE4\xF6\xFC\xF0\xFE\xD0\xE9\-\_\ \!\'\n]", char):
                     '''
                     -\
                     õ = F5, '0x151'

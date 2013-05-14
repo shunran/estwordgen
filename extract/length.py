@@ -9,4 +9,3 @@ class Length(Graph):
         stream = self.openWords()
         for word in stream:
             self.frequency[len(word)] += 1
-        print (self.frequency)
