@@ -10,7 +10,7 @@ from extract.digraph  import *
 from extract.trigraph  import *
 from extract.length import *
 from extract.starttrigraph import *
-from extract.optimizedgraphcollection import OptimizedGraphCollection
+from extract.graphcollection import GraphCollection
 import pickle
 import random
 import cgitb
@@ -44,7 +44,6 @@ class Main:
         ##print ("Content-type:text/html;encoding=UTF-8\n\n")
         def avg(list):
             return float(sum(list)) / len(list)
-            
         print('Digraafid:')
         probTotal = []
         for i in range(8):
@@ -100,16 +99,18 @@ class Main:
     
     def getNaiveTrigraph(self, length, weightedStart = False):
             #import binascii
+
+            
             string = self.getStart(weightedStart)
             for j in range(length - 3):
                 limitedChoice = []
                 for word in self.triGraphFreq:
                     #print("- %s-%s-" % (word, string))
-                    #try:
+                    try:
                         if word[0] == string[-2] and word[1] == string[-1]:
                             limitedChoice += [word]
-                    #except TypeError as err:
-                    #    print("=%s=%s=%s" % (word, string, length))
+                    except TypeError as err:
+                        print("=%s=%s=%s" % (word, string, length))
                 string = string[:-2] + random.choice(limitedChoice)
             return  string
 
@@ -120,6 +121,7 @@ class Main:
 
     def save(self):
         self.saveOptimized2()
+        #self.saveNaive()
         
     def saveOptimized(self):
         lemmad = 'resource/lemmad_comp.txt'
@@ -131,8 +133,8 @@ class Main:
 
         
     def saveNaive(self):
-        lemmad = 'resource/lemmad.txt'
-
+        lemmad = 'resource/lemmad_utf.txt'
+        '''
         print ("salvestan Digraafid")
         digraph = DiGraph(lemmad)
         digraph.scanWords()
@@ -147,7 +149,7 @@ class Main:
         wordlen = Length(lemmad)
         wordlen.scanWords()
         wordlen.saveFrequency('resource/length.pck')
-
+        '''
         print ("salvestan sõnade alguse trigraafid")
         start = StartTriGraph(lemmad)
         start.scanWords()
@@ -183,7 +185,7 @@ class Main:
     def optimize(self):
         generatorFilename = 'resource/optimized_digraph.pck'
         probabilityFilename = 'resource/digraph_probability.pck'
-        a = OptimizedGraphCollection('resource/lemmad.txt', 2)
+        a = OptimizedGraphCollection('resource/lemmad_utf.txt', 2)
         inFile = open(generatorFilename, 'rb')
         a.loadGenerator(inFile)
         inFile.close()
@@ -206,25 +208,29 @@ class Main:
             if len(chars) == 2:
                 chProb = self.findCharsProbability(word[i:i+2])
                 # workaround for wrong encoding perhaps
-                if chProb:
-                    probability *= chProb
+                #if chProb:
+                probability *= chProb
             i += 2
         return probability
 
     def findCharsProbability(self, chars):
         prob = (self.probabilityDict[chars] if chars in 
                     self.probabilityDict else None)
-        #if not prob:
-        #    print('ei leia vastet: %s' % chars)
-        #    print(list(self.probabilityDict.keys()))
+        
+        if not prob:
+            #outStream = open('dictissue.txt', 'wb')
+            print(chars)
+            print(list(self.probabilityDict.keys()))
+            #outStream.close()
+
         return prob
     
 
     def saveOptimized2(self):  
-        a = OptimizedGraphCollection('resource/lemmad.txt', 2)
-        a.scanWords()
-        a.save('resource/digraph_probability.pck',a.probabilityDict)
-        a.save('resource/optimized_digraph.pck', a.generatorDict)
+        a = GraphCollection()
+        a.scanWords('resource/lemmad_devu.txt', 3)
+        #a.save('resource/digraph_probability.pck',a.probabilityDict)
+        #a.save('resource/optimized_digraph.pck', a.generatorDict)
 
 if __name__ == '__main__':
     

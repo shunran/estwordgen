@@ -20,7 +20,7 @@ class Graph:
 
 
     def openWords(self):
-        return open(self.wordFile, 'r', encoding="latin2") # encoding="utf-8"
+        return open(self.wordFile, 'r', encoding="utf-8") #, encoding="latin2") # encoding="utf-8"
     
     def saveFrequency(self, fileName):
         choiceArr = []

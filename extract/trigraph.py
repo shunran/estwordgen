@@ -17,6 +17,7 @@ class TriGraph(Graph):
         '''
         stream = self.openWords()
         for word in stream:
+            #word = word.decode('latin2')
             lastChar, beforeLastChar = None, None
             for char in word.strip():
                 if not lastChar:

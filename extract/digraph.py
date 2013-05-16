@@ -19,12 +19,13 @@ class DiGraph(Graph):
         self.wordFile = wordFile
 
     def openWords(self):
-        return open(self.wordFile, 'r', encoding="latin1") # encoding="utf-8"
+        return open(self.wordFile, 'r', encoding="utf-8") #, encoding="latin2") # encoding="utf-8"
     
     def scanWords(self):
         stream = self.openWords()
         tempArr = Counter()
         for word in stream:
+            #word = word.decode('latin2')
             lastChar = None
             for char in word:
                 # '!' and '\n' should always be final chars in word, so everything is reset anyway
