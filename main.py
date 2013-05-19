@@ -73,9 +73,9 @@ class Main:
                 #print('keskmine tõenäosus: %.5f' % avg(probTotal))
             return ', '.join(words)
         
-        def qdTrigraph():
+        def findWords(count):
             words = []
-            for i in range(10):
+            for i in range(count):
                 len = self.gc.findLength(self.length)
                 word = self.gc.findWord(self.qd3g, 3, len)
                 #prob = self.findStringProbability(word)
@@ -94,9 +94,9 @@ class Main:
             print("\nPseudojuhusliku pikkusega ja kaalutud algusega trigrammid:")
             for i in range(10):
                 word1 = self.random_line(afile) #originaal
-                wordlen = len(word1)
-                word2 = self.getNaiveTrigraph(wordlen, True) #naiivne
-                word3 = oc.findWord(qd3g, 3, wordlen) # optimeeritud
+                wordlen = oc.findLength(self.length)
+                word2 = oc.findWord(self.qd2g, 2, wordlen) #digraaf
+                word3 = oc.findWord(qd3g, 3, wordlen) #trigraaf
                 prob1 = oc.findWordProbability(word1,prob,1) * 10**6
                 prob2 = oc.findWordProbability(word2,prob,1) * 10**6
                 prob3 = oc.findWordProbability(word3,prob,1) * 10**6
@@ -106,13 +106,13 @@ class Main:
                 print ("Sõna1: %s Tõenäosus: %.10f" % (word1, prob1))
                 print ("Sõna2: %s Tõenäosus: %.10f" % (word2, prob2))
                 print ("Sõna3: %s Tõenäosus: %.10f" % (word3, prob3))
-            print('min, avg, max tõenäosus 1: %.5f, %.5f, %.5f' % (min(probTotal1),avg(probTotal1),max(probTotal1)))
-            print('min, avg, max tõenäosus 2: %.5f, %.5f, %.5f' % (min(probTotal2),avg(probTotal2),max(probTotal2)))
-            print('min, avg, max tõenäosus 3: %.5f, %.5f, %.5f' % (min(probTotal3),avg(probTotal3),max(probTotal3)))
+            print('ORIGINAAL min, avg, max tõenäosus 1: %.5f, %.5f, %.5f' % (min(probTotal1),avg(probTotal1),max(probTotal1)))
+            print('DIGRAMM min, avg, max tõenäosus 2: %.5f, %.5f, %.5f' % (min(probTotal2),avg(probTotal2),max(probTotal2)))
+            print('TRIGRAMM min, avg, max tõenäosus 3: %.5f, %.5f, %.5f' % (min(probTotal3),avg(probTotal3),max(probTotal3)))
         
-        print(timeIt(digraph))
-        #compareMethods('resource/lemmad_utf.txt', oc, self.qd3g, self.prob)
-        #print(time_it(digraph));
+        #print(timeIt(digraph))
+        compareMethods('resource/lemmad_utf.txt', self.gc, self.qd3g, self.prob)
+        print(findWords(20));
 
     def getNaiveDigraph(self, length):
         string = random.choice(self.diGraphFreq)
