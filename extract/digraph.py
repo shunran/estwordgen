@@ -21,7 +21,7 @@ class DiGraph(Graph):
     def openWords(self):
         return open(self.wordFile, 'r', encoding="utf-8") #, encoding="latin2") # encoding="utf-8"
     
-    def scanWords(self):
+    def createTrie(self):
         stream = self.openWords()
         tempArr = Counter()
         for word in stream:

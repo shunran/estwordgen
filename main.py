@@ -15,6 +15,8 @@ import pickle
 import random
 import cgitb
 import sys
+
+from pprint import pprint
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
 
@@ -27,82 +29,90 @@ class Main:
     diGraphCollection = None
     triGraphCollection = None
     diGraphCounter = Counter()
+    qd2g = None
+    qd3g = None
+    prob = None
+    length = None
     
-    def run(self):               
-        a = self.diGraphCollection
-        probabilityFilename = 'resource/digraph_probability.pck'
-        inFile = open(probabilityFilename, 'rb')
-        a.loadProbability(inFile)
-        self.probabilityDict = a.probabilityDict
-        self.randomChoiceRun()
-
-    def optimizedRun(self):
-        print('Digraafid:')
-        for i in range(8):
-            print ("Sõna: %s" % self.getOptimizedDigraph(8))
-
-    def randomChoiceRun(self):
+    def run(self):
         ##print ("Content-type:text/html;encoding=UTF-8\n\n")
         def avg(list):
             return float(sum(list)) / len(list)
         '''
-        print('Digraafid:')
-        probTotal = []
+        probabilityFilename = 'resource/digraph_probability.pck'
+        inFile = open(probabilityFilename, 'rb')
+        oc.loadProbability(inFile)
+        self.probabilityDict = oc.probabilityDict
+        lemmad = 'resource/lemmad_utf.txt'
+        inFile = open(lemmad, 'r')
         for i in range(8):
-            word = self.getNaiveDigraph(8)
+            word = self.random_line(inFile)
             prob = self.findStringProbability(word)
-            probTotal.append(prob)
             print ("Sõna: %s Tõenäosus: %.5f" % (word, prob))
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
-        probTotal = []
-        print("\nTrigraafid:")
-        for i in range(8):
-            word = self.getNaiveTrigraph(8)
-            prob = self.findStringProbability(word)
-            probTotal.append(prob)
-            print ("Sõna: %s  Tõenäosus: %.5f" % (word, prob) )
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
-        probTotal = []           
-        print("\nJuhusliku pikkusega trigrammid:")
-        for i in range(8):
-            wordlen = random.choice(self.lengthFreq)
-            word = self.getNaiveTrigraph(wordlen)
-            prob = self.findStringProbability(word)
-            probTotal.append(prob)
-            print ("Pikkus: %s Sõna: %s Tõenäosus: %.5f" % (wordlen, word, prob))      
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
-        probTotal = []        
-        print("\nPseudojuhusliku pikkusega ja kaalutud algusega trigrammid:")
-        for i in range(8):
-            wordlen = random.choice(self.lengthFreq)
-            word = self.getNaiveTrigraph(wordlen, True)
-            prob = self.findStringProbability(word)
-            probTotal.append(prob)
-            print ("Pikkus: %s Sõna: %s Tõenäosus: %.5f" % (wordlen, word, prob))
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
+            print ("uus tõenäosus %.5f" % (10**8 * oc.findWordProbability(word, self.prob , 1)))
         '''
-        ## NEW CODE ###
-        print("Optimeeritud algoritmiga digrammid:")
-        probTotal = []
-        for i in range(8):
-            word = self.diGraphCollection.generateWord(8)
-            prob = self.findStringProbability(word)
-            probTotal.append(prob)
-            print ("Sõna: %s Tõenäosus: %.5f" % (word, prob))
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
+
+        def timeIt(f, *args):
+            import time
+            start = time.clock()
+            m = f(*args)
+            return m, (time.clock() - start)*10
+
+        def digraph():
+            words = []
+            for i in range(1000):
+                #word = self.getNaiveTrigraph(8)
+                len = random.choice(self.lengthFreq)
+                word = self.getNaiveTrigraph(len, True)
+                #prob = self.findStringProbability(word)
+                #probTotal.append(prob)
+                words.append(word)
+                #print(word)
+                #print ("Sõna: %s Tõenäosus: %.5f" % (word, prob))
+                #print ("uus tõenäosus %.10f" % (10^6 * oc.findWordProbability(word, self.prob , 1)))
+                #print('keskmine tõenäosus: %.5f' % avg(probTotal))
+            return ', '.join(words)
         
-        print("Optimeeritud algoritmiga  trigrammid:")
-        probTotal = []
-        for i in range(8):
-            word = self.triGraphCollection.generateWord(8)
-            prob = self.findStringProbability(word)
-            probTotal.append(prob)
-            print ("Sõna: %s Tõenäosus: %.5f" % (word, prob))
-        print('keskmine tõenäosus: %.5f' % avg(probTotal))
-    def getOptimizedDigraph(self, length):
-        summary = sum(self.diGraphCounter.values())
-        a = Counter()
-        pass
+        def qdTrigraph():
+            words = []
+            for i in range(10):
+                len = self.gc.findLength(self.length)
+                word = self.gc.findWord(self.qd3g, 3, len)
+                #prob = self.findStringProbability(word)
+                #probTotal.append(prob)
+                words.append(word)
+                #print(word)
+                #print ("Sõna: %s Tõenäosus: %.5f" % (word, prob))
+                #print ("uus tõenäosus %.10f" % (10^6 * oc.findWordProbability(word, self.prob , 1)))
+                #print('keskmine tõenäosus: %.5f' % avg(probTotal))
+            return ', '.join(words)
+        
+        def compareMethods(afile, oc, qd3g, prob):
+            probTotal1 = []
+            probTotal2 = []
+            probTotal3 = []
+            print("\nPseudojuhusliku pikkusega ja kaalutud algusega trigrammid:")
+            for i in range(10):
+                word1 = self.random_line(afile) #originaal
+                wordlen = len(word1)
+                word2 = self.getNaiveTrigraph(wordlen, True) #naiivne
+                word3 = oc.findWord(qd3g, 3, wordlen) # optimeeritud
+                prob1 = oc.findWordProbability(word1,prob,1) * 10**6
+                prob2 = oc.findWordProbability(word2,prob,1) * 10**6
+                prob3 = oc.findWordProbability(word3,prob,1) * 10**6
+                probTotal1.append(prob1)
+                probTotal2.append(prob2)
+                probTotal3.append(prob3)
+                print ("Sõna1: %s Tõenäosus: %.10f" % (word1, prob1))
+                print ("Sõna2: %s Tõenäosus: %.10f" % (word2, prob2))
+                print ("Sõna3: %s Tõenäosus: %.10f" % (word3, prob3))
+            print('min, avg, max tõenäosus 1: %.5f, %.5f, %.5f' % (min(probTotal1),avg(probTotal1),max(probTotal1)))
+            print('min, avg, max tõenäosus 2: %.5f, %.5f, %.5f' % (min(probTotal2),avg(probTotal2),max(probTotal2)))
+            print('min, avg, max tõenäosus 3: %.5f, %.5f, %.5f' % (min(probTotal3),avg(probTotal3),max(probTotal3)))
+        
+        print(timeIt(digraph))
+        #compareMethods('resource/lemmad_utf.txt', oc, self.qd3g, self.prob)
+        #print(time_it(digraph));
 
     def getNaiveDigraph(self, length):
         string = random.choice(self.diGraphFreq)
@@ -142,116 +152,62 @@ class Main:
         return random.choice(self.triGraphFreq)
 
     def save(self):
-        def saveOptimized():
-            lemmad = 'resource/lemmad_comp.txt'
-            print ("salvestan Digraafid")
-            digraph = DiGraph(lemmad)
-            digraph.scanWords()
-            digraph.saveCounter('resource/digraph_comp.pck')
-            #digraph.('resource/digraph_comp.pck')
-
-        def saveNaive():
-            lemmad = 'resource/lemmad_utf.txt'
-            '''
-            print ("salvestan Digraafid")
-            digraph = DiGraph(lemmad)
-            digraph.scanWords()
-            digraph.saveFrequency('resource/digraph.pck')
-            
-            print ("salvestan Trigraafid")
-            trigraph = TriGraph(lemmad)
-            trigraph.scanWords()
-            trigraph.saveFrequency('resource/trigraph.pck')
-            
-            print ("salvestan Sõnapikkused")
-            wordlen = Length(lemmad)
-            wordlen.scanWords()
-            wordlen.saveFrequency('resource/length.pck')
-            '''
-            print ("salvestan sõnade alguse trigraafid")
-            start = StartTriGraph(lemmad)
-            start.scanWords()
-            start.saveFrequency('resource/start.pck')
 
         def scanAndSave():
-            a = GraphCollection()
-            a.scanWords('resource/lemmad_utf.txt', 3)
-            quickDict = a.create2GQuickDict()
-            a.save('resource/qd2g.pck', quickDict)
-            quickDict = a.create3GQuickDict()
-            a.save('resource/qd3g.pck', quickDict)
+            qd = GraphCollection()
+            fileName = 'resource/lemmad_utf.txt'
+            trie = qd.createTrie(fileName, 3)
+            length       = qd.createLengthQuickArr(fileName)
+            probability  = qd.createQuickDict(trie, 1)
+            generator    = qd.createQuickDict(trie ,3)
+
+            qd.save('resource/qd3g.pck', generator)
+            qd.save('resource/qd1g.pck', probability)
+            qd.save('resource/lngt.pck', length)
 
         scanAndSave()
-        #self.saveNaive()
-        
-        
+
+
     def load(self):
         def loadNaive():
-            #print ("laen Digraafid")
             inFile = open('resource/digraph.pck', 'rb')
             self.diGraphFreq = pickle.load(inFile)
-            
-            #print ("laen Trigraafid")
             inFile = open('resource/trigraph.pck', 'rb')
             self.triGraphFreq = pickle.load(inFile)
-            
-            #print ("laen Sõnapikkused")
+
             inFile = open('resource/length.pck', 'rb')
             self.lengthFreq = pickle.load(inFile)
-            
-            #print ("laen sõnade alguse trigraafid")
+
             inFile = open('resource/start.pck', 'rb')
             self.startFreq = pickle.load(inFile)
 
-        def loadOptimized():
-            a = GraphCollection()
-            b = GraphCollection()
-            inFile = open('resource/qd2g.pck', 'rb')
-            a.quickDict = pickle.load(inFile)
-            inFile = open('resource/qd2g.pck', 'rb')
-            b.quickDict = pickle.load(inFile)
+        def loadOptimized(self):
+            gc = GraphCollection()
+            qd1g = gc.load('resource/qd1g.pck')
+            qd2g = gc.load('resource/qd2g.pck')
+            qd3g = gc.load('resource/qd3g.pck')
+            length = gc.load('resource/lngt.pck')
             #a.quickDict = self.qd2g
-            self.diGraphCollection = a
-            self.triGraphCollection = b
-        
+            self.gc   = gc
+            self.prob = qd1g
+            self.qd2g = qd2g
+            self.qd3g = qd3g
+            self.length = length
+
         loadNaive()
-        loadOptimized()
-        
-    def getRandomLength(self):
-        return random.choice(self.lengthFreq)
+        loadOptimized(self)
 
-    def findStringProbability(self, word):
-        i = 0
-        probability = 1
-        while i <= len(word):
-            chars = word[i:i+2]
-            if len(chars) == 2:
-                chProb = self.findCharsProbability(word[i:i+2])
-                # workaround for wrong encoding perhaps
-                if chProb:
-                    probability *= chProb
-            i += 2
-        return probability
+    def random_line(self,afile):
+        return random.choice(list(open(afile))).rstrip('\n')
 
-    def findCharsProbability(self, chars):
-        prob = (self.probabilityDict[chars] if chars in 
-                    self.probabilityDict else None)
-        
-        if not prob:
-            #outStream = open('dictissue.txt', 'wb')
-            print(chars)
-            print(list(self.probabilityDict.keys()))
-            #outStream.close()
-
-        return prob
+    def getRandomLength(self, lengthList):
+        return random.choice(lengthList)
 
 if __name__ == '__main__':
-    
+
     app = Main()
     if len(sys.argv) > 1 and sys.argv[1] == 'save':
         app.save()
-    elif True:
+    else:
         app.load()
         app.run()
-    else:
-        app.optimize()
