@@ -5,16 +5,6 @@ Created on Feb 19, 2013
 @author: lauri
 '''
 
-''' 
-Äkki peaks vana koodi põhjal mingid sõnad genereerima ja koodi ise minema viskama
-tõenäosusprotsent ikkagi tähendab just protsenti, et mingile tähele või täheühendile järgneb
-just see kindel täht. Kogu sõna peale tehakse diskreetne jaatus kõikide tähtede järgnevuse peale e. korrutatakse nad läbi.
-Rekursiivne täheühendite pikkusest sõltumatu skänner
-
-# TODO:
-jääda trigraafide juurde, kuidas põhjendada?
-sõnaalguse algoritm viia kahetäheliseks
-'''
 import re
 import pickle
 import random
@@ -48,7 +38,7 @@ class GraphCollection():
               Ä = ..; Ö = ..; Ü = ..; š = F0; ž = FE; - = 2D;
               space = 20; ! = 21; Š = D0; ' = 27; é = E9
         '''
-        if re.match("[a-zA-Z0-9\xF5\xE4\xF6\xFC\xF0\xFE\xD0\xE9\-\_\ \!\'\n]", character):
+        if re.match("[\w\-\_\ \!\'\n]", character):
             return True
         return False
 
