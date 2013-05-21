@@ -1,16 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''
-Created on Feb 19, 2013
-@author: lauri
-'''
 
+from collections import Counter, deque
+import bisect
+import random
 import re
 import pickle
-import random
-import bisect
-from pprint import pprint
-from collections import deque, OrderedDict, Counter
+
 
 class GraphCollection():
 
@@ -111,7 +107,7 @@ class GraphCollection():
                 if length:
                     lengths[length] += 1
             return lengths
-        
+
         def createQD(counter):
             total = sum(v for v in counter.values())
             count = []
@@ -122,7 +118,7 @@ class GraphCollection():
                 count.append(runningTotal)
                 value.append(k)
             return total, count, value
-        
+
         stream = self.openWordFile(fileName)
         lengths = countLenghts(stream)
         return createQD(lengths)
@@ -162,7 +158,7 @@ class GraphCollection():
         #### MAIN PART OF THE createQuickDict ###
         result = recTrieScan(freqTrie, keyLength)
         return result
-    
+
     def findStart(self, quickDict, depth):
         charQue = deque('#' * depth, maxlen = depth)
         for i in range(depth):
@@ -173,7 +169,7 @@ class GraphCollection():
                 break
         chars = ''.join(l for l in charQue )
         return chars
-    
+
     def findCharacter(self, qdSlice):
         rnd = random.random() * qdSlice[0]
         character = qdSlice[1][bisect.bisect_left(qdSlice[2], rnd)]
@@ -190,7 +186,7 @@ class GraphCollection():
             except KeyError as e:
                 break
         return word
-    
+
     def findWordProbability(self, word, quickDict, depth):
         word = "#" + word
         probability = 1
@@ -210,7 +206,7 @@ class GraphCollection():
         outStream = open(fileName, 'wb')
         pickle.dump(collection, outStream)
         outStream.close()
-     
+
     def load(self, fileName):
         inFile = open(fileName, 'rb')
         return pickle.load(inFile)   

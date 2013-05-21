@@ -1,21 +1,18 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''
-Created on Feb 19, 2013
-@author: lauri
-'''
+
 from extract.graphcollection import GraphCollection
 
 import random
 
-import sys
 import cgi
-import os
 import cgitb
-
 import json
+import os
+import sys
+
+
 cgitb.enable()
-from pprint import pprint
 
 class Main:
     gc = None
@@ -50,7 +47,7 @@ class Main:
                 word = self.gc.findWord(Qdict, depth, length)
                 words.append(word)
             return words
-        
+
         def compareMethods(afile, oc, qd3g, prob):
             probTotal1 = []
             probTotal2 = []
@@ -153,8 +150,6 @@ class Main:
     def random_line(self,afile):
         return random.choice(list(open(afile))).rstrip('\n')
 
-    def getRandomLength(self, lengthList):
-        return random.choice(lengthList)
 
 if __name__ == '__main__':
 
