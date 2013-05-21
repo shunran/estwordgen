@@ -202,6 +202,7 @@ class GraphCollection():
         return word
     
     def findWordProbability(self, word, quickDict, depth):
+        word = "#" + word
         probability = 1
         for position in range(len(word)):
             if position + depth < len(word):
