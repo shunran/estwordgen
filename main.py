@@ -75,15 +75,27 @@ class Main:
             def chooseAndGet():
                 form = cgi.FieldStorage()
                 result = {}
+                len = None
+                if 'len' in form:
+                    if int(form['len'].value) < 50 and int(form['len'].value) > 2:
+                        len = int(form['len'].value)
                 if 'how' in form:
                     if   form['how'].value == 'dgf':
-                        result = findWords(20, self.qd2g_f, 2)
+                        if not len:
+                            len = self.length_f
+                        result = findWords(20, self.qd2g_f, 2, len)
                     elif form['how'].value == 'tgf':
-                        result = findWords(20, self.qd3g_f, 3)
+                        if not len:
+                            len = self.length_f
+                        result = findWords(20, self.qd3g_f, 3, len)
                     elif form['how'].value == 'dgh':
-                        result = findWords(20, self.qd2g_h, 2, self.length_h)
+                        if not len:
+                            len = self.length_h
+                        result = findWords(20, self.qd2g_h, 2, len)
                     elif form['how'].value == 'tgh':
-                        result = findWords(20, self.qd3g_h, 3, self.length_h)
+                        if not len:
+                            len = self.length_h
+                        result = findWords(20, self.qd3g_h, 3, len)
                 return json.dumps(result)
 
             print ("Content-type:text/html;encoding=UTF-8")
