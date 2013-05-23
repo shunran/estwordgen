@@ -77,8 +77,11 @@ class Main:
                 result = {}
                 len = None
                 if 'len' in form:
-                    if int(form['len'].value) < 50 and int(form['len'].value) > 2:
-                        len = int(form['len'].value)
+                    try:
+                        if int(form['len'].value) < 50 and int(form['len'].value) > 2:
+                            len = int(form['len'].value)
+                    except ValueError:
+                        pass
                 if 'how' in form:
                     if   form['how'].value == 'dgf':
                         if not len:
