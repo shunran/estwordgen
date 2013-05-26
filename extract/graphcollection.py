@@ -18,10 +18,10 @@ class GraphCollection():
     """
     freqTrie = None
     """ Markov chain trie of character following possibility and probability.
-        '#' key marks word beginning
+     '#' key marks word beginning
      'a': {'count': 2,
-       'next': {'p': {'count': 3, 'next': {'e': {'count': 5, 'next': {'i': ...}}}},
-                'v': {'count': 1, 'next': {'e': {'count': 1, 'next': {}}}}}},...
+       'children': {'p': {'count': 3, 'children': {'e': {'count': 5, 'children': {'i': ...}}}},
+                'v': {'count': 1, 'children': {'e': {'count': 1, 'children': {}}}}}},...
 
     """
 
@@ -67,8 +67,8 @@ class GraphCollection():
                     count = 1
                     if key == "#":
                         count = 0
-                    dictPart[key] = { 'count' : count, 'next' : {} }
-                return recursiveScan(charList[1:], dictPart[key]['next'])
+                    dictPart[key] = { 'count' : count, 'children' : {} }
+                return recursiveScan(charList[1:], dictPart[key]['children'])
 
         """ Main part of the method """
         stream = self.openWordFile(fileName)
@@ -134,7 +134,7 @@ class GraphCollection():
             depth -= 1
             if depth > 0:
                 for char, item in trieSlice.items():
-                    recTrieScan(item['next'], depth, keyChars + char, result)
+                    recTrieScan(item['children'], depth, keyChars + char, result)
                 return result
             else:
                 for char, item in trieSlice.items():
@@ -142,12 +142,12 @@ class GraphCollection():
                 return result
 
         def createQDRow(freqDictSlice):
-            total = sum(v['count'] for k,v in freqDictSlice['next'].items())
+            total = sum(v['count'] for k,v in freqDictSlice['children'].items())
             charName = []
             charCount = []
             charProbability = []
             runningTotal = 0
-            for k, v in freqDictSlice['next'].items():
+            for k, v in freqDictSlice['children'].items():
                 if k != '#':
                     runningTotal += v['count']
                     charProbability.append(v['count'] / total)
