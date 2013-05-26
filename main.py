@@ -143,13 +143,14 @@ class Main:
             #words = ('haigeduv', 'sistamat', 'igatsivi', 'särklaag', 'andrilin')
             #words = ('htamasvu','õhesteni', 'oorusaja', 'tiuspial', 'avõhuria', 'tasimisu')
             #findMetric(words, self.gc, self.qd1g_f)
-            'a = compareMethods('resource/lemmad_utf.txt',
+            '''
+            a = compareMethods('resource/lemmad_utf.txt',
                            self.gc, self.qd3g_h,
                            self.qd2g_h, self.qd1g_h)
-            
+            '''
             '''
             lst = []
-            #with open('resource/lemmad_utf.txt', 'r') as f:
+            with open('resource/lemmad_utf.txt', 'r') as f:
                 for l in f.readlines():
                     lst.append(len(l))
             print ('Min: %s, Avg: %s Keskv: %s Max: %s' % (min(lst), avg(lst), median(lst),max(lst)))
